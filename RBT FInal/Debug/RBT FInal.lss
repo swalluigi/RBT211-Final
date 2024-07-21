@@ -1,0 +1,171 @@
+
+RBT FInal.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000088  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000fc  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000002  00800060  00800060  000000fc  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000000fc  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000012c  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000028  00000000  00000000  00000168  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000530  00000000  00000000  00000190  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000004a0  00000000  00000000  000006c0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000001ff  00000000  00000000  00000b60  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000034  00000000  00000000  00000d60  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000357  00000000  00000000  00000d94  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000042  00000000  00000000  000010eb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000018  00000000  00000000  0000112d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0e c0       	rjmp	.+28     	; 0x1e <__ctors_end>
+   2:	1d c0       	rjmp	.+58     	; 0x3e <__bad_interrupt>
+   4:	1c c0       	rjmp	.+56     	; 0x3e <__bad_interrupt>
+   6:	1b c0       	rjmp	.+54     	; 0x3e <__bad_interrupt>
+   8:	1a c0       	rjmp	.+52     	; 0x3e <__bad_interrupt>
+   a:	19 c0       	rjmp	.+50     	; 0x3e <__bad_interrupt>
+   c:	18 c0       	rjmp	.+48     	; 0x3e <__bad_interrupt>
+   e:	17 c0       	rjmp	.+46     	; 0x3e <__bad_interrupt>
+  10:	16 c0       	rjmp	.+44     	; 0x3e <__bad_interrupt>
+  12:	15 c0       	rjmp	.+42     	; 0x3e <__bad_interrupt>
+  14:	14 c0       	rjmp	.+40     	; 0x3e <__bad_interrupt>
+  16:	13 c0       	rjmp	.+38     	; 0x3e <__bad_interrupt>
+  18:	12 c0       	rjmp	.+36     	; 0x3e <__bad_interrupt>
+  1a:	11 c0       	rjmp	.+34     	; 0x3e <__bad_interrupt>
+  1c:	10 c0       	rjmp	.+32     	; 0x3e <__bad_interrupt>
+
+0000001e <__ctors_end>:
+  1e:	11 24       	eor	r1, r1
+  20:	1f be       	out	0x3f, r1	; 63
+  22:	cf e5       	ldi	r28, 0x5F	; 95
+  24:	d2 e0       	ldi	r29, 0x02	; 2
+  26:	de bf       	out	0x3e, r29	; 62
+  28:	cd bf       	out	0x3d, r28	; 61
+
+0000002a <__do_clear_bss>:
+  2a:	20 e0       	ldi	r18, 0x00	; 0
+  2c:	a0 e6       	ldi	r26, 0x60	; 96
+  2e:	b0 e0       	ldi	r27, 0x00	; 0
+  30:	01 c0       	rjmp	.+2      	; 0x34 <.do_clear_bss_start>
+
+00000032 <.do_clear_bss_loop>:
+  32:	1d 92       	st	X+, r1
+
+00000034 <.do_clear_bss_start>:
+  34:	a2 36       	cpi	r26, 0x62	; 98
+  36:	b2 07       	cpc	r27, r18
+  38:	e1 f7       	brne	.-8      	; 0x32 <.do_clear_bss_loop>
+  3a:	02 d0       	rcall	.+4      	; 0x40 <main>
+  3c:	23 c0       	rjmp	.+70     	; 0x84 <_exit>
+
+0000003e <__bad_interrupt>:
+  3e:	e0 cf       	rjmp	.-64     	; 0x0 <__vectors>
+
+00000040 <main>:
+	return pwm;
+}
+
+int main(void)
+{
+	ADMUX|= (0 << REFS2) | (0 << REFS1 ) | (0 << REFS0 ) | (1 << ADLAR) | (0 << MUX3 ) | (0 << MUX2 ) | (1 << MUX1 ) | (0 << MUX0 ); //REFS pins are voltage reference selection bits. seting (REFS1, REFS0) as (0,0)
+  40:	87 b1       	in	r24, 0x07	; 7
+  42:	82 62       	ori	r24, 0x22	; 34
+  44:	87 b9       	out	0x07, r24	; 7
+	// ADLAR- left adjust bit
+	// MUX pins select which ADC pin to use. (0010) means we are suing ADC2, which is PB4 (pin 3). this pin is connected to the potentiometer
+	
+	ADCSRA |= (1 << ADEN ) | (0 << ADSC ) |(0 << ADATE) |(0 << ADIF ) |(0 << ADIE ) |(1 << ADPS2 ) |(1 << ADPS1 ) |(0 << ADPS0 ); // ADEN: ADC enable
+  46:	86 b1       	in	r24, 0x06	; 6
+  48:	86 68       	ori	r24, 0x86	; 134
+  4a:	86 b9       	out	0x06, r24	; 6
+	// ADSC: starts conversions in setup code if enabled. look at page 136 on datasheet for more info
+	//    ADATE: Auto trigger enable. trigger source selected in ADCSRB
+	//    ADIF: intterupt flag. makes it run in an interupt block
+	//  ADPS bits: Prescaler select bits. determines the prescaler division factor between system clock frequecy and input. minimum divion is 2 (0,0,0)
+	
+	ADCSRB |= (0 << ADTS2 ) | ( 0 << ADTS1) | (0 << ADTS0 ); //ADTS = auto triger source: (0,0,0) puts it in free running mode
+  4c:	83 b1       	in	r24, 0x03	; 3
+  4e:	83 b9       	out	0x03, r24	; 3
+	
+
+	
+	
+	TCCR0A |= (1 << COM0A1) | (0 << COM0A0) |  (1 << WGM01) | (1 << WGM00);  //WGM02, WGM01, WGM00 are set to (0,1,1) to enable fast PWM mode
+  50:	8a b5       	in	r24, 0x2a	; 42
+  52:	83 68       	ori	r24, 0x83	; 131
+  54:	8a bd       	out	0x2a, r24	; 42
+																						   // The COM ports (1,0) 
+																													
+	TCCR0B |=(0 << CS02) | (0 << CS01) | (1 << CS00) | (0 << WGM02) ;  		// CS02, CS01, CS00vare set to (0,0,1), which sets no prescaler.
+  56:	83 b7       	in	r24, 0x33	; 51
+  58:	81 60       	ori	r24, 0x01	; 1
+  5a:	83 bf       	out	0x33, r24	; 51
+	
+	DDRB |= (1 << PB0); // sets PB0 (pin 5) as output  
+  5c:	87 b3       	in	r24, 0x17	; 23
+  5e:	81 60       	ori	r24, 0x01	; 1
+  60:	87 bb       	out	0x17, r24	; 23
+	
+	sei(); //globla interrupt enable																							
+  62:	78 94       	sei
+    /* Replace with your application code */
+	mode = 0;
+  64:	10 92 61 00 	sts	0x0061, r1	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  68:	10 92 60 00 	sts	0x0060, r1	; 0x800060 <__DATA_REGION_ORIGIN__>
+    while (1) 
+    {   
+ 		// sets the OCR0A pin to out put 100%, 75%, 50%, 25%, and 0% power in 5 second intervals using the Motor_linear eqation
+		//OCR0A = 255;
+		
+		int Analog_value_H = ADCH; // reads ADC the 8-bit high (most sig bits) value  into this  integer. if ADLAR = 0, there is only two that can be read (0b000000xx)
+  6c:	85 b1       	in	r24, 0x05	; 5
+		int Analog_value_L = ADCL; // reads ADC low value (least significant bits)  into this  integer  (0bxxxxxxxx)
+  6e:	84 b1       	in	r24, 0x04	; 4
+		int Analog_value = ADC; // 10 bit number 0bxxxxxxxxxx
+  70:	84 b1       	in	r24, 0x04	; 4
+  72:	95 b1       	in	r25, 0x05	; 5
+		// 8 least significant bits 2^8. between 0-255
+		
+		//0 will be 0 V read
+		// MAX value (1023) will be 5 volts
+		
+		ADCSRA |= (1 << ADSC);         // start ADC measurement
+  74:	86 b1       	in	r24, 0x06	; 6
+  76:	80 64       	ori	r24, 0x40	; 64
+  78:	86 b9       	out	0x06, r24	; 6
+		while (ADCSRA & (1 << ADSC) ){ // wait till conversion complete
+  7a:	36 9b       	sbis	0x06, 6	; 6
+  7c:	f7 cf       	rjmp	.-18     	; 0x6c <main+0x2c>
+		
+		
+		OCR0A = ADCH;
+  7e:	85 b1       	in	r24, 0x05	; 5
+  80:	89 bd       	out	0x29, r24	; 41
+		
+		//0 will be 0 V read
+		// MAX value (1023) will be 5 volts
+		
+		ADCSRA |= (1 << ADSC);         // start ADC measurement
+		while (ADCSRA & (1 << ADSC) ){ // wait till conversion complete
+  82:	fb cf       	rjmp	.-10     	; 0x7a <main+0x3a>
+
+00000084 <_exit>:
+  84:	f8 94       	cli
+
+00000086 <__stop_program>:
+  86:	ff cf       	rjmp	.-2      	; 0x86 <__stop_program>
